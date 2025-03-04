@@ -13,6 +13,31 @@ namespace drama {
         return (a >> (32 - end)) & ((1 << (end - beg + 1)) - 1);
     }
 
+    void CPU::split(uint32_t a, uint *offsets, uint offsets_size, uint *dst) {
+        uint offset_index = 0;
+        uint bit_index = 0;
+        for (; bit_index < 32; ++bit_index) {
+            if (bit_index == offsets[offset_index] && offsets_size > offset_index)
+                ++offset_index;
+            dst[offset_index] = (dst[offset_index] << 1) + ((a >> bit_index) & 1);
+        }
+    }
+
+    void CPU::parse_type_r(uint32_t a, uint *dst) {
+        uint part_offsets[] = { 6, 11, 16, 21, 26 };
+        return split(a, part_offsets, 5, dst);
+    }
+
+    void CPU::parse_type_i(uint32_t a, uint *dst) {
+        uint part_offsets[] = { 6, 11, 16 };
+        return split(a, part_offsets, 3, dst);
+    }
+
+    void CPU::parse_type_j(uint32_t a, uint *dst) {
+        uint part_offsets[] = { 6 };
+        return split(a, part_offsets, 1, dst);
+    }
+
     CPU::~CPU() {
         delete memory;
     }
@@ -27,31 +52,66 @@ namespace drama {
     int CPU::interpret_text_unit(uint8_t *ptr) {
         // TODO: implement
         auto inst = consolidate(ptr, 4);
-        switch (static_cast<ISA>(*ptr >> 3)) {
+        switch (static_cast<ISA>(*ptr >> 2)) {
             case ISA::ADD:
-                
+                uint parts[5] = {0};
+                parse_type_r(inst, parts);
+                registers[parts[3]] = static_cast<int32_t>(registers[parts[1]]) + static_cast<int32_t>(registers[parts[2]]);
                 return 0;
             case ISA::ADDU:
+                uint parts[5] = {0};
+                parse_type_r(inst, parts);
+                registers[parts[3]] = registers[parts[1]] + registers[parts[2]];
                 return 0;
             case ISA::ADDI:
+                uint parts[3] = {0};
+                parse_type_r(inst, parts);
+                registers[parts[2]] = static_cast<int32_t>(registers[parts[1]]) + static_cast<int32_t>(parts[3]);
                 return 0;
             case ISA::ADDIU:
+                uint parts[3] = {0};
+                parse_type_r(inst, parts);
+                registers[parts[2]] = registers[parts[1]] + parts[3];
                 return 0;
             case ISA::MUL:
+                uint parts[5] = {0};
+                parse_type_r(inst, parts);
+                registers[parts[3]] = static_cast<int32_t>(registers[parts[1]]) * static_cast<int32_t>(registers[parts[2]]);
                 return 0;
             case ISA::MULU:
+                uint parts[5] = {0};
+                parse_type_r(inst, parts);
+                registers[parts[3]] = registers[parts[1]] * registers[parts[2]];
                 return 0;
             case ISA::MULI:
+                uint parts[3] = {0};
+                parse_type_r(inst, parts);
+                registers[parts[2]] = static_cast<int32_t>(registers[parts[1]]) * static_cast<int32_t>(parts[3]);
                 return 0;
             case ISA::MULIU:
+                uint parts[3] = {0};
+                parse_type_r(inst, parts);
+                registers[parts[2]] = registers[parts[1]] * parts[3];
                 return 0;
             case ISA::DIV:
+                uint parts[5] = {0};
+                parse_type_r(inst, parts);
+                registers[parts[3]] = static_cast<int32_t>(registers[parts[1]]) / static_cast<int32_t>(registers[parts[2]]);
                 return 0;
             case ISA::DIVU:
+                uint parts[5] = {0};
+                parse_type_r(inst, parts);
+                registers[parts[3]] = registers[parts[1]] / registers[parts[2]];
                 return 0;
             case ISA::DIVI:
+                uint parts[3] = {0};
+                parse_type_r(inst, parts);
+                registers[parts[2]] = static_cast<int32_t>(registers[parts[1]]) / static_cast<int32_t>(parts[3]);
                 return 0;
             case ISA::DIVIU:
+                uint parts[3] = {0};
+                parse_type_r(inst, parts);
+                registers[parts[2]] = registers[parts[1]] / parts[3];
                 return 0;
             case ISA::BEQ:
                 return 0;

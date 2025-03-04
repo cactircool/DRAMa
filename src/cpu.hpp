@@ -70,7 +70,12 @@ namespace drama {
         std::stack<Block> blocks;
 
         static uint32_t consolidate(uint8_t *ptr, uint8_t size);
+        static void split(uint32_t a, uint *offsets, uint offsets_size, uint *dst);
         static uint32_t trim(uint32_t a, uint8_t beg, uint8_t end);
+
+        static void parse_type_r(uint32_t a, uint *dst);
+        static void parse_type_i(uint32_t a, uint *dst);
+        static void parse_type_j(uint32_t a, uint *dst);
 
         void interpret_text(Block &block, Executable &file);
         int interpret_text_unit(uint8_t *ptr); // returns instruction length to manage jumps
