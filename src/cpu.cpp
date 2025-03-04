@@ -10,7 +10,11 @@ namespace drama {
         memory(new Memory(l1_size, l2_size, l3_size, size)) {}
 
     uint32_t CPU::trim(uint32_t a, uint8_t beg, uint8_t end) {
-        return (a >> (32 - end)) & (1 << end) - 1;
+        return (a >> (32 - end)) & ((1 << (end - beg + 1)) - 1);
+    }
+
+    CPU::~CPU() {
+        delete memory;
     }
 
     uint32_t CPU::consolidate(uint8_t *ptr, uint8_t size) {
@@ -25,6 +29,7 @@ namespace drama {
         auto inst = consolidate(ptr, 4);
         switch (static_cast<ISA>(*ptr >> 3)) {
             case ISA::ADD:
+                
                 return 0;
             case ISA::ADDU:
                 return 0;
