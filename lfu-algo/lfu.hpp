@@ -1,21 +1,12 @@
 #ifndef LFU_H
 #define LFU_H
 
-#include <cstdint>
+#include "lfuutil.hpp"
 #include <unordered_map>
 #include <set>
+using namespace drama;
 
 namespace drama {
-    // typedef std::pair<size_t, size_t> LFU_key;
-    typedef size_t LFU_key;
-    typedef int LFU_value;
-
-    typedef std::pair<unsigned, LFU_key> LFU_freq;
-    struct LFU_data {
-        unsigned freq;
-        LFU_value value;
-    };
-    
     // Optimal implementation of LFU using data structures
     class LFU {
         size_t max_size;
@@ -29,7 +20,7 @@ namespace drama {
 
         LFU_value get(LFU_key key);
 
-        void put(LFU_key key, LFU_value value);
+        void put(LFU_key key, LFU_value val);
     };
 }
 
