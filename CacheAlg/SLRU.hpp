@@ -20,13 +20,13 @@ private:
     void evict_from_cache();
     void evict_from_protected();
 
-    size_t cap; // Capacity of the cache list
-    size_t protected_cap; // Capacity of the protected list
-    std::list<int> cache_list; // List for cache
-    std::list<int> protected_list; // List for protected items
-    std::unordered_map<int, std::pair<int, int>> cache_map; // Maps key to (value, access_time)
-    std::unordered_map<int, int> protected_map; // Maps key to value
-    std::unordered_map<int, int> access_count; // New map to track access times
+    size_t cap; 
+    size_t protected_cap; 
+    std::list<int> cache_list;
+    std::list<int> protected_list; 
+    std::unordered_map<int, std::pair<int, int>> cache_map; 
+    std::unordered_map<int, int> protected_map; 
+    std::unordered_map<int, int> access_count; 
 };
 
-#endif // SLRU_HPP
+#endif 
