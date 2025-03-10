@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <utility>
 #include <iostream>
+using namespace std;
 
 class SLRU {
 public:
@@ -22,11 +23,11 @@ private:
 
     size_t cap; 
     size_t protected_cap; 
-    std::list<int> cache_list;
-    std::list<int> protected_list; 
-    std::unordered_map<int, std::pair<int, int>> cache_map; 
-    std::unordered_map<int, int> protected_map; 
-    std::unordered_map<int, int> access_count; 
+    list<int> cache_list;
+    list<int> protected_list; 
+    unordered_map<int, pair<int, int>> cache_map; 
+    unordered_map<int, int> protected_map; 
+    unordered_map<int, int> access_count; 
 };
 
 #endif 
