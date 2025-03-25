@@ -29,9 +29,11 @@ namespace drama {
         DIVIU,
 
         BEQ,
+        BNE,
 
         J,
         JAL,
+        JR,
 
         AND,
         ANDI,
@@ -42,7 +44,7 @@ namespace drama {
         XOR,
         XORI,
 
-        NOT,
+        NOR,
 
         LBU,
         LHU,
@@ -65,12 +67,12 @@ namespace drama {
     };
 
     class CPU {
-        uint32_t registers[32];
+        uint32_t registers[32]; // reg32 = ra
         Memory *memory;
         std::stack<Block> blocks;
 
-        static uint32_t consolidate(uint8_t *ptr, uint8_t size);
-        static void split(uint32_t a, uint32_t *offsets, uint32_t offsets_size, uint32_t *dst);
+        static uint32_t consolidate(const uint8_t *ptr, uint8_t size);
+        static void split(uint32_t a, const uint32_t *offsets, uint32_t offsets_size, uint32_t *dst);
         static uint32_t trim(uint32_t a, uint8_t beg, uint8_t end);
 
         static void parse_type_r(uint32_t a, uint32_t *dst);
@@ -78,7 +80,9 @@ namespace drama {
         static void parse_type_j(uint32_t a, uint32_t *dst);
 
         void interpret_text(Block &block, Executable &file);
-        int interpret_text_unit(uint8_t *ptr); // returns instruction length to manage jumps
+        void interpret_text_unit(Block &block, uint8_t *ptr, size_t &pc);
+
+        void syscall(Block &block);
 
     public:
         CPU(size_t l1_size, size_t l2_size, size_t l3_size, size_t size);
