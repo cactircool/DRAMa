@@ -40,6 +40,21 @@ namespace drama {
         void stack_alloc(size_t size);
         void heap_alloc(size_t size);
 
+        #define f(x) uint8_t *cache_##x(size_t offset, size_t n);
+
+        f(lfu)
+        f(lfru)
+        f(lfuda)
+        f(lifo)
+        f(lilo) 
+        f(filo) 
+        f(filo) 
+        f(sieve)
+        f(lru)
+        f(slru)
+
+        #undef f
+
     public:
         Block(uint8_t *begin, size_t size, Memory *parent);
         ~Block();
