@@ -48,7 +48,7 @@ namespace drama {
         f(lifo)
         f(lilo) 
         f(filo) 
-        f(filo) 
+        f(fifo) 
         f(sieve)
         f(lru)
         f(slru)
