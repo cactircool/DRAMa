@@ -5,6 +5,8 @@
 #include "memory.hpp"
 #include <stdexcept>
 #include <algorithm>
+#include "LRUcache.hpp"
+
 
 namespace drama {
 
@@ -77,6 +79,21 @@ namespace drama {
 
     uint8_t *Block::cache_attempt(size_t offset, size_t n) {
         // TODO: implement
+
+        // l1 hit attemp (LRU)
+        int l1_hit = m_parent->cache.l1.get(offset);
+        if (l1_hit != -1)
+        {
+            return reinterpret_cast<uint8_t *> (l1_hit);
+        }
+
+        // l2 hit attempt (SLRU) if l1 miss    
+        int l2_hit = m_parent->cache.l2.get(offset);
+        if (l2_hit != -1)
+        {
+            return reinterpret_cast<uint8_t *> (l2_hit);
+        }
+
         return nullptr;
     }
 

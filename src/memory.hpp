@@ -9,6 +9,9 @@
 #include <unordered_set>
 #include <set>
 #include "executable.hpp"
+#include "LRUcache.hpp"
+#include "SLRU.hpp"
+
 
 namespace drama {
 
@@ -40,6 +43,21 @@ namespace drama {
         void stack_alloc(size_t size);
         void heap_alloc(size_t size);
 
+        #define f(x) uint8_t *cache_##x(size_t offset, size_t n);
+
+        f(lfu)
+        f(lfru)
+        f(lfuda)
+        f(lifo)
+        f(lilo) 
+        f(filo) 
+        f(fifo) 
+        f(sieve)
+        f(lru)
+        f(slru)
+
+        #undef f
+
     public:
         Block(uint8_t *begin, size_t size, Memory *parent);
         ~Block();
@@ -61,24 +79,16 @@ namespace drama {
     };
 
     class Memory {
-        struct Cache {
-            struct {
-                uint8_t *block;
-                size_t size;
-            } l1;
+        struct LRU_SLRU {
+            LRUcache l1;
+            SLRU l2;
 
-            struct {
-                uint8_t *block;
-                size_t size;
-            } l2;
+            LRU_SLRU(size_t l1_size, size_t l2_size, size_t l2_protected_size)
+            : l1(l1_size), l2(l2_size,l2_protected_size){}
 
-            struct {
-                uint8_t *block;
-                size_t size;
-            } l3;
         } cache;
 
-        uint8_t *bytes;
+        uint8_t *bytes; 
         size_t size;
         std::set<Allocation> alloc_map;
 
